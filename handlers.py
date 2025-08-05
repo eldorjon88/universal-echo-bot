@@ -1,4 +1,4 @@
-from telegram import Update, ParseMode, ReplyKeyboardMarkup, KeyboardButton
+from telegram import Update, ParseMode, ReplyKeyboardMarkup, KeyboardButton, WebAppInfo, KeyboardRemove
 from telegram.ext import CallbackContext
 
 
@@ -40,7 +40,7 @@ def handle_text(update: Update, context: CallbackContext):
 
 def handle_main_menu(update: Update, context: CallbackContext):
     update.message.reply_markdown_v2(
-        text=">Siz Bosh Menu ni Tanldingiz",
+        text=">Siz Bosh Menuni Tanldingiz",
         reply_markup=ReplyKeyboardMarkup(
             keyboard=[
                 [KeyboardButton("Mahsulotlar")]
@@ -52,14 +52,31 @@ def handle_main_menu(update: Update, context: CallbackContext):
 def start(update: Update, context: CallbackContext):
     bot = context.bot
     user = update.effective_user
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
+from telegram.ext import CallbackContext
 
-    bot.send_message(
+def start(update: Update, context: CallbackContext) -> None:
+    user = update.effective_user  # foydalanuvchi haqida ma'lumot
+    full_name = user.full_name    # bu foydalanuvchining telegramda qanday ko‘rinayotgan ismi
+
+    context.bot.send_message(
         chat_id=user.id,
-        text='Menu Tanlang:',
+        text=f"Assalomu aleykum, {full_name}!\nMenu Tanlang:",
         reply_markup=ReplyKeyboardMarkup(
             keyboard=[
                 [KeyboardButton("Bosh Menu"), KeyboardButton("Buyurtma Berish")],
-                [KeyboardButton("A'loqa"), KeyboardButton("Contact")]
-            ]
+                [KeyboardButton("location", request_location= True), KeyboardButton("Contact", request_contact= True)],
+                [KeyboardButton("Close")]
+
+            ],
+            resize_keyboard=True,
+            one_time_keyboard=True,
         )
     )
+
+def remove_keyboard (update: Update, context: CallbackContext):
+    update.message.replay_text(
+        'Closed Keyboard',
+        repley_markup=ReplyKeyboardRemove()
+    )
+
